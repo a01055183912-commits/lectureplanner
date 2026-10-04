@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>강의 계획서 설계기</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar no-print">
+  <div class="brand">강의 계획서 설계기</div>
+  <div class="status" id="status"></div>
+</header>
+
+<main class="layout">
+  <aside class="panel no-print" id="formPanel">
+    <form id="form" autocomplete="off">
+      <h2>입력</h2>
+
+      <label>강의 주제 *
+        <input name="topic" required placeholder="예) 생성형 AI를 활용한 업무 자동화">
+      </label>
+      <label>강의 대상 *
+        <input name="audience" required placeholder="예) 입사 3년차 이하 사무직 실무자">
+      </label>
+
+      <div class="row">
+        <label>소요 시간
+          <div class="inline">
+            <input type="number" name="hours" min="0" max="40" value="3"> <span>시간</span>
+            <input type="number" name="mins" min="0" max="59" step="5" value="0"> <span>분</span>
+          </div>
+        </label>
+        <label>시작 시각
+          <input type="time" name="start" value="09:00">
+        </label>
+      </div>
+
+      <div class="row">
+        <label>진행 방식
+          <select name="mode">
+            <option>오프라인</option><option>온라인(실시간)</option><option>혼합(블렌디드)</option>
+          </select>
+        </label>
+        <label>예상 인원
+          <input name="headcount" placeholder="예) 20명">
+        </label>
+      </div>
+
+      <fieldset>
+        <legend>유형 비율 (%)</legend>
+        <div id="ratios"></div>
+        <div class="ratio-foot">
+          <span id="ratioSum"></span>
+          <button type="button" class="link" id="ratioFix">합계 100%로 맞추기</button>
+        </div>
+        <div class="bar" id="ratioBar"></div>
+      </fieldset>
+
+      <label>기타 참고 특징
+        <textarea name="notes" rows="3" placeholder="예) 노트북 지참 가능, 비개발 직군, 사내 보안 정책상 외부 서비스 제한"></textarea>
+      </label>
+
+      <fieldset id="eduBox">
+        <legend>내일배움카드 훈련과정 연동</legend>
+        <label class="radio"><input type="radio" name="eduMode" value="off" checked> 사용 안 함</label>
+        <label class="radio"><input type="radio" name="eduMode" value="similar"> 유사 교육 참고·제안</label>
+        <label class="radio"><input type="radio" name="eduMode" value="gap"> 기존 과정에 없는 내용 제안</label>
+        <div id="eduOpts" hidden>
+          <div class="row">
+            <label>검색 키워드
+              <input name="eduKeyword" placeholder="비우면 강의 주제 사용">
+            </label>
+            <label>훈련 지역
+              <select name="eduArea">
+                <option value="">전체</option>
+                <option value="11">서울</option><option value="41">경기</option><option value="28">인천</option>
+                <option value="26">부산</option><option value="27">대구</option><option value="30">대전</option>
+                <option value="12">전남광주</option><option value="31">울산</option><option value="36">세종</option>
+                <option value="43">충북</option><option value="44">충남</option><option value="45">전북</option>
+                <option value="47">경북</option><option value="48">경남</option><option value="50">제주</option><option value="51">강원</option>
+              </select>
+            </label>
+          </div>
+          <button type="button" class="ghost" id="eduPreview">훈련과정 미리 검색</button>
+          <div id="eduList" class="edu-list"></div>
+        </div>
+        <p class="hint" id="eduHint"></p>
+      </fieldset>
+
+      <button type="submit" class="primary" id="genBtn">강의 계획서 생성</button>
+      <p class="error" id="error" role="alert"></p>
+    </form>
+  </aside>
+
+  <section class="doc-wrap">
+    <div class="toolbar no-print" id="toolbar" hidden>
+      <button class="ghost" id="btnPrint">PDF 인쇄</button>
+      <button class="ghost" id="btnMd">MD 저장</button>
+      <button class="ghost" id="btnCopy">MD 복사</button>
+      <span class="spacer"></span>
+      <span class="hint">본문을 클릭해 직접 수정할 수 있습니다 · 각 섹션의 ✦ 로 AI 재생성</span>
+    </div>
+    <article id="doc" class="doc">
+      <div class="empty">왼쪽에 조건을 입력하고 <b>강의 계획서 생성</b>을 눌러 주세요.</div>
+    </article>
+  </section>
+</main>
+
+<dialog id="regenDlg">
+  <form method="dialog" id="regenForm">
+    <h3 id="regenTitle"></h3>
+    <textarea id="regenInstr" rows="3" placeholder="요청 사항 (선택) 예) 실습 비중을 높여서, 더 쉬운 예시로"></textarea>
+    <div class="dlg-actions">
+      <button type="button" class="ghost" id="regenCancel">취소</button>
+      <button type="submit" class="primary" id="regenGo">재생성</button>
+    </div>
+  </form>
+</dialog>
+
+<div class="overlay" id="busy" hidden><div class="spinner"></div><div id="busyText">AI가 작성 중입니다… (30초~2분)</div></div>
+<script src="app.js"></script>
+</body>
+</html>

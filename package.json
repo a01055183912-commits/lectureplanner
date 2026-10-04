@@ -1,0 +1,18 @@
+{
+  "name": "lectureplanner",
+  "version": "1.0.0",
+  "description": "맞춤형 강의 계획서 설계기 (Claude AI + 국민내일배움카드 훈련과정 연동)",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "latest",
+    "express": "^4.21.0"
+  }
+}
